@@ -1,16 +1,13 @@
 import os
 import telebot
 import threading
-import time  # Добавьте эту строку для импорта модуля time
+import time
 from telebot import types
 import sqlite3
 from config import API_TOKEN
 
-
 # Создаем бота
 bot = telebot.TeleBot(token=API_TOKEN)
-
-
 
 # Подключаемся к базе данных SQLite
 conn = sqlite3.connect('users.db', check_same_thread=False)
@@ -21,19 +18,16 @@ conn.commit()
 
 # Функция для получения всех пользователей из базы данных
 def get_all_users():
-    conn = sqlite3.connect('users.db')
-    cursor = conn.cursor()
     cursor.execute("SELECT * FROM users")
     users = cursor.fetchall()
-    conn.close()
     return users
 
 # Функция для отправки сообщения каждые 5 минут
 
-
 # Обработчик команды /start
 @bot.message_handler(commands=['start'])
 def handle_start(message):
+    global conn, cursor
     user_id = message.from_user.id
     username = message.from_user.username
     chat_id = message.chat.id
@@ -61,8 +55,6 @@ def handle_write_admin(call):
 def send_to_admin(message, user_id, username):
     admin_chat_id = 6448857134  # Замените на ваш ID чата с админом
     user_message = message.text
-
-
 
     # Отправляем пользователю подтверждение об отправке сообщения
     bot.send_message(message.chat.id, "Сообщение отправлено")
